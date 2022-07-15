@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:AnnotationsListView"
+               xmlns:navigationdrawer="clr-namespace:Syncfusion.SfNavigationDrawer.XForms;assembly=Syncfusion.SfNavigationDrawer.XForms"
+             xmlns:pdfviewer="clr-namespace:Syncfusion.SfPdfViewer.XForms;assembly=Syncfusion.SfPdfViewer.XForms"
+             xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             x:Class="AnnotationsListView.MainPage">
+
+    <ContentPage.BindingContext>
+        <local:AnnotationsListViewModel x:Name="viewmodel"></local:AnnotationsListViewModel>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:ImageSourceConverter x:Key="ImageSourceConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <navigationdrawer:SfNavigationDrawer x:Name="navigationDrawer" DrawerFooterHeight="0" DrawerHeaderHeight="50">
+        <navigationdrawer:SfNavigationDrawer.ContentView>
+            <Grid x:Name="mainContentView" BackgroundColor="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackLayout BackgroundColor="#1aa1d6" Orientation="Horizontal">
+                    <Button x:Name="hamburgerButton" HeightRequest="50" WidthRequest="50"
+                            HorizontalOptions="Center" FontSize="14"
+                            BackgroundColor="#1aa1d6"
+                            Clicked="hamburgerButton_Clicked"
+                            Margin="5,0,0,0"/>
+                    <Label x:Name="headerLabel" HeightRequest="50"  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Text="Annotaions ListView" FontSize="20" TextColor="White" BackgroundColor="#1aa1d6"/>
+                </StackLayout>
+                <pdfviewer:SfPdfViewer x:Name="pdfViewer" Grid.Row="1" InputFileStream="{Binding PdfDocumentStream}"></pdfviewer:SfPdfViewer>
+            </Grid>
+        </navigationdrawer:SfNavigationDrawer.ContentView>        
+        <navigationdrawer:SfNavigationDrawer.DrawerHeaderView>
+            <Grid BackgroundColor="#1aa1d6">
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Start"
+                   VerticalOptions="Center" >
+                    <Label Text="Annotations" FontSize="20" TextColor="White" Margin="10,0,0,0"/>
+                    <Label Text="(" FontSize="20" TextColor="White" Margin="5,0,0,0"/>
+                    <Label BindingContext="{x:Reference Name=pdfViewer}" Text="{Binding Annotations.Count}" TextColor="White" FontSize="20"/>
+                    <Label Text=")" FontSize="20" TextColor="White"/>
+                </StackLayout>
+            </Grid>
+        </navigationdrawer:SfNavigationDrawer.DrawerHeaderView>        
+        <navigationdrawer:SfNavigationDrawer.DrawerContentView>
+            <listView:SfListView BackgroundColor="White" x:Name="listView" AllowGroupExpandCollapse="True"
+                                 ItemTapped="listView_ItemTapped"
+                                 BindingContext="{x:Reference Name=pdfViewer}"
+                                 ItemsSource="{Binding Annotations}">
+                <listView:SfListView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="#E4E4E4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Start"
+                   VerticalOptions="Center" >
+                                <Label Text="{Binding Key}" TextColor="Black" FontSize="Medium" Margin="10,0,0,0"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Grid.Column="1"
+                   HorizontalOptions="EndAndExpand" VerticalOptions="Center" Margin="0,0,5,0">
+                                <Label Text="{Binding Count}" FontSize="Medium" TextColor="Black" />
+                                <Image VerticalOptions="Center" HeightRequest="15"
+                                       WidthRequest="15"
+                                       Source="{Binding IsExpand, Converter={StaticResource ImageSourceConverter}}">
+                                </Image>
+                            </StackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </listView:SfListView.GroupHeaderTemplate>
+                <listView:SfListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <local:ListViewItem />
+                        </ViewCell>
+                    </DataTemplate>
+                </listView:SfListView.ItemTemplate>
+            </listView:SfListView>
+        </navigationdrawer:SfNavigationDrawer.DrawerContentView>
+    </navigationdrawer:SfNavigationDrawer>
+</ContentPage>
